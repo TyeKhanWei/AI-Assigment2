@@ -98,12 +98,12 @@ body {
 .anchor-line { stroke: rgba(82, 81, 78, 0.55); stroke-width: 1.2; stroke-dasharray: 2 3; }
 .anchor-dot { fill: rgba(82, 81, 78, 0.7); stroke: #ffffff; stroke-width: 1; }
 
-.node circle { stroke: #ffffff; stroke-width: 2.5; }
-.node.idle circle { fill: var(--idle); }
-.node.frontier circle { fill: var(--frontier); }
-.node.path circle { fill: var(--path); }
-.node.expanding circle { fill: var(--expanding); animation: pulse 0.9s ease-in-out infinite; }
-.node.final circle { fill: var(--final); }
+.node .node-circle { stroke: #ffffff; stroke-width: 2.5; }
+.node.idle .node-circle { fill: var(--idle); }
+.node.frontier .node-circle { fill: var(--frontier); }
+.node.path .node-circle { fill: var(--path); }
+.node.expanding .node-circle { fill: var(--expanding); animation: pulse 0.9s ease-in-out infinite; }
+.node.final .node-circle { fill: var(--final); }
 .node-id { fill: #ffffff; font-weight: 700; font-size: 13px; text-anchor: middle; }
 .node-label {
   fill: #1f2937; font-size: 12px; font-weight: 600; text-anchor: middle;

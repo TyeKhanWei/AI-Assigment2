@@ -136,7 +136,7 @@ function GraphOverlay({ nodes, step, solution }) {
                 <circle className="anchor-dot" cx={p.anchor.x} cy={p.anchor.y} r="3" />
               </>
             )}
-            <circle cx={p.x} cy={p.y} r={NODE_R} />
+            <circle className="node-circle" cx={p.x} cy={p.y} r={NODE_R} />
             <text className="node-id" x={p.x} y={p.y + 5}>{n.id}</text>
             <text className="node-label" x={p.x} y={labelY}>{n.label}</text>
           </g>
