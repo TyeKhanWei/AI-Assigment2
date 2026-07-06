@@ -23,6 +23,39 @@ function nodeState(id, step, solution) {
   return "idle";
 }
 
+// Markers sit at their true coordinates; when two would collide at the current
+// zoom, they are nudged apart on screen and a leader line points back to the
+// true pinned location. Zooming in dissolves the nudge naturally.
+function declutteredPositions(map, nodes) {
+  const anchors = {};
+  const pts = nodes.map((n) => {
+    const p = map.latLngToContainerPoint([n.lat, n.lng]);
+    anchors[n.id] = p;
+    return { id: n.id, x: p.x, y: p.y };
+  });
+  const MIN = NODE_R * 2 + 10;
+  for (let iter = 0; iter < 40; iter++) {
+    let moved = false;
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        let dx = pts[j].x - pts[i].x;
+        let dy = pts[j].y - pts[i].y;
+        let d = Math.hypot(dx, dy);
+        if (d >= MIN) continue;
+        if (d < 1e-6) { dx = 1; dy = -1; d = Math.SQRT2; }
+        const push = (MIN - d) / 2 / d;
+        pts[i].x -= dx * push; pts[i].y -= dy * push;
+        pts[j].x += dx * push; pts[j].y += dy * push;
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  const pos = {};
+  for (const p of pts) pos[p.id] = { x: p.x, y: p.y, anchor: anchors[p.id] };
+  return pos;
+}
+
 // SVG drawn over the map; node pixel positions are re-projected from lat/lng
 // on every map pan/zoom so the graph stays glued to the geography.
 function GraphOverlay({ nodes, step, solution }) {
@@ -31,10 +64,7 @@ function GraphOverlay({ nodes, step, solution }) {
   useMapEvents({ move: force, zoom: force, resize: force });
 
   const size = map.getSize();
-  const pos = {};
-  for (const n of nodes) {
-    pos[n.id] = map.latLngToContainerPoint([n.lat, n.lng]);
-  }
+  const pos = declutteredPositions(map, nodes);
 
   const poppedPath = step.popped.path;
   const poppedLast = poppedPath[poppedPath.length - 1];
@@ -94,11 +124,21 @@ function GraphOverlay({ nodes, step, solution }) {
       {nodes.map((n) => {
         const state = nodeState(n.id, step, solution);
         const p = pos[n.id];
+        const displaced = Math.hypot(p.x - p.anchor.x, p.y - p.anchor.y) > 4;
+        // Nudged-up markers label above so adjacent labels don't collide
+        const labelAbove = displaced && p.y < p.anchor.y - 1;
+        const labelY = labelAbove ? p.y - NODE_R - 8 : p.y + NODE_R + 16;
         return (
           <g key={n.id} className={`node ${state}`}>
+            {displaced && (
+              <>
+                <line className="anchor-line" x1={p.anchor.x} y1={p.anchor.y} x2={p.x} y2={p.y} />
+                <circle className="anchor-dot" cx={p.anchor.x} cy={p.anchor.y} r="3" />
+              </>
+            )}
             <circle cx={p.x} cy={p.y} r={NODE_R} />
             <text className="node-id" x={p.x} y={p.y + 5}>{n.id}</text>
-            <text className="node-label" x={p.x} y={p.y + NODE_R + 16}>{n.label}</text>
+            <text className="node-label" x={p.x} y={labelY}>{n.label}</text>
           </g>
         );
       })}

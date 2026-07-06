@@ -53,12 +53,14 @@ and `npm install` once first).
 
 ## Map background
 
-The graph is drawn over a real dark street map of the Bandar Sunway /
+The graph is drawn over a real street map of the Bandar Sunway /
 Petaling Jaya / Shah Alam area (Leaflet + CARTO/OpenStreetMap tiles — free,
 no API key). Loading the map tiles requires an internet connection; the
-UCS algorithm itself runs fully offline. Note: Lagoon View blocks A and B
-(nodes 2 and 6) are really ~160 m from Sunway University, so their markers
-are offset by ~0.7 km on the map for readability (see `backend/data.py`).
+UCS algorithm itself runs fully offline. All nodes are pinned at their true
+coordinates. Sunway University and Lagoon View blocks A/B are within ~160 m
+of each other, so at low zoom the display nudges overlapping markers apart
+and draws a dotted leader line back to the true pinned location; zooming in
+restores the exact positions.
 
 ## How it works
 
