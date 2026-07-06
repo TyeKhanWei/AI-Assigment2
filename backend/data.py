@@ -5,14 +5,18 @@ DIST  = distance in km (directed).
 Route "A" and "B" are the two Google Maps routing options collected in Assignment 1.
 """
 
+# lat/lng from OpenStreetMap Nominatim. Nodes 2 and 6 (Lagoon View blocks A/B)
+# are really ~160 m from Sunway University (node 0); their coordinates are
+# offset by ~0.7 km here so the three markers don't overlap on the map view.
+# Real Lagoon View location: 3.0670, 101.6053.
 NODES = [
-    {"id": 0, "name": "Sunway University",          "label": "Sunway Uni",              "area": "Bandar Sunway, Subang Jaya", "x": 620, "y": 430},
-    {"id": 1, "name": "Addison Loo's Residence",    "label": "SS4 (Addison)",           "area": "SS4, Petaling Jaya",         "x": 500, "y": 80},
-    {"id": 2, "name": "Albert Pang's Residence",    "label": "Lagoon View A (Albert)",  "area": "Bandar Sunway, Subang Jaya", "x": 700, "y": 500},
-    {"id": 3, "name": "Chin Yung Xuan's Residence", "label": "Kota Kemuning (Yung Xuan)", "area": "Kota Kemuning, Shah Alam", "x": 140, "y": 470},
-    {"id": 4, "name": "Eng Zheng Yu's Residence",   "label": "Kemuning Utama (Zheng Yu)", "area": "Kemuning Utama, Shah Alam", "x": 200, "y": 330},
-    {"id": 5, "name": "Tan Yann Bin's Residence",   "label": "SS2 (Yann Bin)",          "area": "SS2, Petaling Jaya",         "x": 660, "y": 150},
-    {"id": 6, "name": "Tye Khan Wei's Residence",   "label": "Lagoon View B (Khan Wei)", "area": "Bandar Sunway, Subang Jaya", "x": 790, "y": 430},
+    {"id": 0, "name": "Sunway University",          "label": "Sunway Uni",              "area": "Bandar Sunway, Subang Jaya", "lat": 3.0672, "lng": 101.6039},
+    {"id": 1, "name": "Addison Loo's Residence",    "label": "SS4 (Addison)",           "area": "SS4, Petaling Jaya",         "lat": 3.1095, "lng": 101.6037},
+    {"id": 2, "name": "Albert Pang's Residence",    "label": "Lagoon View A (Albert)",  "area": "Bandar Sunway, Subang Jaya", "lat": 3.0607, "lng": 101.6076},
+    {"id": 3, "name": "Chin Yung Xuan's Residence", "label": "Kota Kemuning (Yung Xuan)", "area": "Kota Kemuning, Shah Alam", "lat": 3.0049, "lng": 101.5360},
+    {"id": 4, "name": "Eng Zheng Yu's Residence",   "label": "Kemuning Utama (Zheng Yu)", "area": "Kemuning Utama, Shah Alam", "lat": 3.0096, "lng": 101.5290},
+    {"id": 5, "name": "Tan Yann Bin's Residence",   "label": "SS2 (Yann Bin)",          "area": "SS2, Petaling Jaya",         "lat": 3.1161, "lng": 101.6222},
+    {"id": 6, "name": "Tye Khan Wei's Residence",   "label": "Lagoon View B (Khan Wei)", "area": "Bandar Sunway, Subang Jaya", "lat": 3.0731, "lng": 101.6118},
 ]
 
 TIME = {

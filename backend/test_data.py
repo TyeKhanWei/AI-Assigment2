@@ -4,8 +4,17 @@ from data import NODES, TIME, DIST, mode
 def test_seven_nodes_with_required_fields():
     assert [n["id"] for n in NODES] == [0, 1, 2, 3, 4, 5, 6]
     for n in NODES:
-        for key in ("name", "label", "area", "x", "y"):
+        for key in ("name", "label", "area", "lat", "lng"):
             assert key in n
+
+
+def test_coordinates_are_in_klang_valley_and_distinct():
+    for n in NODES:
+        assert 2.95 < n["lat"] < 3.20, f"node {n['id']} lat out of range"
+        assert 101.45 < n["lng"] < 101.70, f"node {n['id']} lng out of range"
+    # Lagoon View blocks A/B are display-offset so they don't overlap on the map
+    coords = {(n["lat"], n["lng"]) for n in NODES}
+    assert len(coords) == 7
 
 
 def test_matrix_shapes_and_positivity():

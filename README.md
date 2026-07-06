@@ -51,10 +51,20 @@ and `npm install` once first).
     cd backend  && pytest        # 20 tests: data integrity, UCS optimality, trace, API
     cd frontend && npm test      # 8 tests: playback reducer
 
+## Map background
+
+The graph is drawn over a real dark street map of the Bandar Sunway /
+Petaling Jaya / Shah Alam area (Leaflet + CARTO/OpenStreetMap tiles — free,
+no API key). Loading the map tiles requires an internet connection; the
+UCS algorithm itself runs fully offline. Note: Lagoon View blocks A and B
+(nodes 2 and 6) are really ~160 m from Sunway University, so their markers
+are offset by ~0.7 km on the map for readability (see `backend/data.py`).
+
 ## How it works
 
-- `backend/data.py` — the 7 nodes and the Route A/B time (min) and distance (km)
-  matrices from Assignment 1 Tables 1.2/1.3.
+- `backend/data.py` — the 7 nodes (with real lat/lng coordinates) and the
+  Route A/B time (min) and distance (km) matrices from Assignment 1
+  Tables 1.2/1.3.
 - `backend/ucs.py` — UCS over states `(current_node, visited_set)`; priority
   queue keyed on cumulative travel time g(n); goal test on dequeue; records
   every pop/push/prune plus a frontier snapshot so the frontend can animate it.

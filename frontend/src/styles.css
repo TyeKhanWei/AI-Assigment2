@@ -44,9 +44,25 @@ body {
 
 .content { display: flex; flex: 1; min-height: 0; }
 
-.graph { flex: 1; height: 100%; background: var(--bg); }
+.graph { position: relative; flex: 1; min-width: 0; background: var(--bg); }
+.map { width: 100%; height: 100%; background: var(--bg); }
+.graph-overlay {
+  position: absolute; inset: 0; z-index: 500; pointer-events: none;
+}
+.legend-box {
+  position: absolute; top: 12px; left: 12px; z-index: 600; pointer-events: none;
+  background: rgba(15, 23, 42, 0.82); border: 1px solid #334155; border-radius: 8px;
+  padding: 8px 12px; font-size: 12.5px; color: var(--muted);
+}
+.legend-item { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+.legend-item .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.dot.idle { background: var(--idle); }
+.dot.frontier { background: var(--frontier); }
+.dot.path { background: var(--path); }
+.dot.expanding { background: var(--expanding); }
+.dot.final { background: var(--final); }
 
-.edge.base { stroke: #1e293b; stroke-width: 1.5; }
+.edge.base { stroke: rgba(148, 163, 184, 0.22); stroke-width: 1.5; }
 .edge.push { stroke: var(--frontier); stroke-width: 2; opacity: 0.9; stroke-dasharray: 6 5; animation: dash 0.6s linear infinite; }
 .edge.path { stroke: var(--path); stroke-width: 3; }
 .edge.final { stroke: var(--final); stroke-width: 4; animation: glow 1.2s ease-in-out infinite alternate; }
@@ -57,7 +73,7 @@ body {
 
 @keyframes dash { to { stroke-dashoffset: -11; } }
 @keyframes glow { from { stroke-opacity: 0.7; } to { stroke-opacity: 1; } }
-@keyframes pulse { 0% { r: 24; } 50% { r: 29; } 100% { r: 24; } }
+@keyframes pulse { 0% { r: 16; } 50% { r: 20; } 100% { r: 16; } }
 
 .node circle { stroke: #0b1220; stroke-width: 2; }
 .node.idle circle { fill: var(--idle); }
@@ -65,11 +81,14 @@ body {
 .node.path circle { fill: var(--path); }
 .node.expanding circle { fill: var(--expanding); animation: pulse 0.9s ease-in-out infinite; }
 .node.final circle { fill: var(--final); }
-.node-id { fill: #0b1220; font-weight: 700; font-size: 15px; text-anchor: middle; }
-.node-label { fill: var(--muted); font-size: 12px; text-anchor: middle; }
-.legend circle { stroke-width: 1; }
-.legend .legend-label { fill: var(--muted); font-size: 12px; text-anchor: start; }
-.legend .node.expanding circle { animation: none; }
+.node-id { fill: #0b1220; font-weight: 700; font-size: 13px; text-anchor: middle; }
+.node-label {
+  fill: #e2e8f0; font-size: 12px; text-anchor: middle;
+  paint-order: stroke; stroke: #0b1220; stroke-width: 3px; stroke-linejoin: round;
+}
+.edge-label {
+  paint-order: stroke; stroke: #0b1220; stroke-width: 3px; stroke-linejoin: round;
+}
 
 .queue-panel {
   width: 340px; overflow-y: auto; background: var(--panel);
