@@ -48,12 +48,13 @@ export default function QueuePanel({ step, index, total }) {
 
       {step.type !== "goal" && (
         <>
-          <h3>Priority queue (lowest g first)</h3>
+          <h3>Priority queue — cheapest total time first</h3>
           <ol className="frontier">
             {shown.map((f, i) => (
               <li key={i} className={i === 0 ? "next" : ""}>
                 <span className="g">g={f.g}</span>
                 <span className="p">{pathStr(f.path)}</span>
+                {i === 0 && <span className="next-tag">next</span>}
               </li>
             ))}
           </ol>

@@ -36,6 +36,7 @@ export default function Controls({ route, onRoute, pb, dispatch, total }) {
         value={pb.index}
         onChange={(e) => dispatch({ type: "SEEK", index: Number(e.target.value) })}
       />
+      <span className="step-counter">Step {pb.index + 1} / {total}</span>
     </div>
   );
 }

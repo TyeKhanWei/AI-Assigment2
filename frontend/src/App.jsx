@@ -50,7 +50,10 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <h1>House Tour — Uniform Cost Search</h1>
+        <div className="title-block">
+          <h1>House Tour — Uniform Cost Search</h1>
+          <p className="subtitle">Start at Sunway University · visit all 6 residences · cost = travel time (minutes)</p>
+        </div>
         <Controls route={route} onRoute={setRoute} pb={pb} dispatch={dispatch} total={total} />
       </header>
       <main className="content">
