@@ -79,7 +79,27 @@ body {
 .dot.expanding { background: var(--expanding); }
 .dot.final { background: var(--final); }
 
+.basemap-toggle {
+  position: absolute; top: 12px; right: 12px; z-index: 600; pointer-events: auto;
+  display: flex; gap: 2px;
+  background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border); border-radius: 10px;
+  padding: 4px; box-shadow: 0 1px 4px rgba(11, 11, 11, 0.08);
+}
+.basemap-toggle button {
+  border: none; background: transparent; color: var(--text-2);
+  font-size: 12.5px; padding: 5px 10px; border-radius: 7px; cursor: pointer;
+}
+.basemap-toggle button:hover { background: var(--surface-2); }
+.basemap-toggle button.active { background: var(--path); color: #ffffff; font-weight: 600; }
+
+/* <polyline> defaults to a filled black shape unlike <line>, which has no
+   fill concept -- required now that edges are multi-point road paths. */
+.edge { fill: none; }
+
 .edge.base { stroke: rgba(82, 81, 78, 0.20); stroke-width: 1.5; }
+/* .edge.base has no halo, unlike node/label text -- near-invisible against a
+   busy satellite photo without this override. */
+.graph.satellite .edge.base { stroke: rgba(255, 255, 255, 0.55); stroke-width: 2; }
 .edge.push { stroke: var(--frontier); stroke-width: 2; opacity: 0.9; stroke-dasharray: 6 5; animation: dash 0.6s linear infinite; }
 .edge.path { stroke: var(--path); stroke-width: 3; }
 .edge.final { stroke: var(--final); stroke-width: 4; animation: glow 1.2s ease-in-out infinite alternate; }

@@ -48,19 +48,24 @@ and `npm install` once first).
 
 ## Running the tests
 
-    cd backend  && pytest        # 20 tests: data integrity, UCS optimality, trace, API
-    cd frontend && npm test      # 8 tests: playback reducer
+    cd backend  && pytest        # 27 tests: data integrity, UCS optimality, trace, API, road-path generator
+    cd frontend && npm test      # 19 tests: playback reducer, node-state classifier, road-path geometry
 
 ## Map background
 
-The graph is drawn over a real street map of the Bandar Sunway /
-Petaling Jaya / Shah Alam area (Leaflet + CARTO/OpenStreetMap tiles — free,
-no API key). Loading the map tiles requires an internet connection; the
-UCS algorithm itself runs fully offline. All nodes are pinned at their true
-coordinates. Sunway University and Lagoon View blocks A/B are within ~160 m
-of each other, so at low zoom the display nudges overlapping markers apart
-and draws a dotted leader line back to the true pinned location; zooming in
-restores the exact positions.
+The graph is drawn over a real map of the Bandar Sunway / Petaling Jaya /
+Shah Alam area (Leaflet, free, no API key), with a **Street / Satellite**
+toggle in the top-right corner of the map. Street uses CARTO/OpenStreetMap
+tiles; Satellite uses Esri World Imagery. Loading either set of map tiles
+requires an internet connection; the UCS algorithm itself runs fully
+offline. All nodes are pinned at their true coordinates. Sunway University
+and Lagoon View blocks A/B are within ~160 m of each other, so at low zoom
+the display nudges overlapping markers apart and draws a dotted leader line
+back to the true pinned location; zooming in restores the exact positions.
+
+Edges follow real roads and footpaths (via OpenStreetMap routing data, see
+"How it works" below) rather than straight lines between nodes, so the map
+reflects the actual streets the Route A/B times were measured over.
 
 ## How it works
 
@@ -71,5 +76,10 @@ restores the exact positions.
   queue keyed on cumulative travel time g(n); goal test on dequeue; records
   every pop/push/prune plus a frontier snapshot so the frontend can animate it.
 - `backend/server.py` — FastAPI endpoint `GET /api/solve?route=A|B`.
+- `backend/build_road_paths.py` — one-off script that fetches real road/
+  footpath geometry for every pair of nodes from the public OSRM routing
+  server and caches it to `frontend/src/roadPaths.json` (committed, so the
+  running app never depends on OSRM). Only rerun this if a node's
+  coordinates change — see the script's own docstring.
 - `frontend/` — React app that fetches the trace once and plays it back
   (no algorithm logic in JavaScript).
