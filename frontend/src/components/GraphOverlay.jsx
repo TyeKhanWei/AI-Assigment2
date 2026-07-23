@@ -12,6 +12,25 @@ function toAttr(points) {
   return points.map((p) => `${p.x},${p.y}`).join(" ");
 }
 
+// Shortens a polyline's final segment so it stops `gap` px short of its
+// endpoint. Without this, an arrowhead (drawn at the true endpoint) ends up
+// centered on the node it's pointing at and is mostly hidden behind the
+// node circle -- pulling the line back leaves the arrow floating cleanly
+// just outside it.
+function pullBackEnd(points, gap) {
+  if (points.length < 2) return points;
+  const last = points[points.length - 1];
+  const prev = points[points.length - 2];
+  const dx = last.x - prev.x;
+  const dy = last.y - prev.y;
+  const segLen = Math.hypot(dx, dy);
+  if (segLen <= gap) return [...points.slice(0, -1), prev];
+  const trimmed = { x: last.x - (dx / segLen) * gap, y: last.y - (dy / segLen) * gap };
+  return [...points.slice(0, -1), trimmed];
+}
+
+const ARROW_GAP = NODE_R + 6;
+
 // A final-tour leg that draws itself in like a snake growing along the road,
 // then fades its minute label in once the line finishes. Re-mounts fresh
 // each time it enters `finalEdges` (unique key per node pair), so the
@@ -48,7 +67,7 @@ function SnakeLeg({ points, minutes, labelAnchor }) {
 
   return (
     <g>
-      <polyline ref={ref} className="edge final" markerEnd="url(#arrow)" points={toAttr(points)} />
+      <polyline ref={ref} className="edge final" markerEnd="url(#arrow-final)" points={toAttr(points)} />
       <text
         className="edge-label snake-label"
         style={{ animationDelay: `${SNAKE_LEG_MS}ms` }}
@@ -98,8 +117,11 @@ export default function GraphOverlay({ nodes, step, solution, revealedLegs }) {
   return (
     <svg className="graph-overlay" width={size.x} height={size.y} role="img" aria-label="UCS search map">
       <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" className="arrow-head" />
+        <marker id="arrow-path" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" className="arrow-head arrow-head-path" />
+        </marker>
+        <marker id="arrow-final" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" className="arrow-head arrow-head-final" />
         </marker>
       </defs>
 
@@ -115,8 +137,8 @@ export default function GraphOverlay({ nodes, step, solution, revealedLegs }) {
 
       {/* tour-so-far of the popped state */}
       {!solution && pathEdges.map(([a, b]) => (
-        <polyline key={`path-${a}-${b}`} className="edge path" markerEnd="url(#arrow)"
-          points={toAttr(edgePoints(a, b).points)} />
+        <polyline key={`path-${a}-${b}`} className="edge path" markerEnd="url(#arrow-path)"
+          points={toAttr(pullBackEnd(edgePoints(a, b).points, ARROW_GAP))} />
       ))}
 
       {/* final optimal tour: legs draw in one at a time, snake-style */}
@@ -125,7 +147,7 @@ export default function GraphOverlay({ nodes, step, solution, revealedLegs }) {
         return (
           <SnakeLeg
             key={`final-${a}-${b}`}
-            points={points}
+            points={pullBackEnd(points, ARROW_GAP)}
             labelAnchor={labelAnchor}
             minutes={finalLegs[i].minutes}
           />

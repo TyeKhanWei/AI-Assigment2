@@ -103,9 +103,13 @@ body {
 .edge.push { stroke: var(--frontier); stroke-width: 2; opacity: 0.9; stroke-dasharray: 6 5; animation: dash 0.6s linear infinite; }
 .edge.path { stroke: var(--path); stroke-width: 3; }
 .edge.final { stroke: var(--final); stroke-width: 4; animation: glow 1.2s ease-in-out infinite alternate; }
-.arrow-head { fill: currentColor; }
-.edge.path { color: var(--path); }
-.edge.final { color: var(--final); }
+/* Markers render outside the referencing element's inheritance context, so
+   currentColor doesn't reach them -- each arrowhead variant is colored
+   explicitly instead. The white outline keeps it legible over any edge
+   color, map tile, or label text it happens to sit near. */
+.arrow-head { stroke: #ffffff; stroke-width: 1.5px; stroke-linejoin: round; paint-order: stroke; }
+.arrow-head-path { fill: var(--path); }
+.arrow-head-final { fill: var(--final); }
 .edge-label {
   fill: #047857; font-size: 13px; font-weight: 600; text-anchor: middle;
   paint-order: stroke; stroke: #ffffff; stroke-width: 3.5px; stroke-linejoin: round;
