@@ -32,4 +32,16 @@ describe("nodeState", () => {
     // branch is general-purpose -- exercise it with a partial path too.
     expect(nodeState(3, step, { path: [0, 2, 6] })).toBe("idle");
   });
+
+  it("with revealedLegs, only shows nodes the snake has reached so far", () => {
+    const solution = { path: [0, 2, 6, 1, 5, 4, 3] };
+    // 0 legs revealed -> only the start node (0) is final
+    expect(nodeState(0, step, solution, 0)).toBe("final");
+    expect(nodeState(2, step, solution, 0)).toBe("idle");
+    // 2 legs revealed -> nodes 0, 2, 6 are final; the rest still idle
+    expect(nodeState(6, step, solution, 2)).toBe("final");
+    expect(nodeState(1, step, solution, 2)).toBe("idle");
+    // fully revealed (all 6 legs) -> matches the no-arg behaviour
+    expect(nodeState(3, step, solution, 6)).toBe("final");
+  });
 });

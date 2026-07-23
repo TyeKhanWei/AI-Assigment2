@@ -13,7 +13,7 @@ const LEGEND = [
   ["final", "Optimal tour"],
 ];
 
-export default function GraphView({ nodes, step, solution }) {
+export default function GraphView({ nodes, step, solution, revealedLegs }) {
   const [basemap, setBasemap] = useState(DEFAULT_BASEMAP);
   const selected = BASEMAPS.find((b) => b.id === basemap);
 
@@ -38,7 +38,7 @@ export default function GraphView({ nodes, step, solution }) {
           subdomains={selected.subdomains}
           maxZoom={selected.maxZoom}
         />
-        <GraphOverlay nodes={nodes} step={step} solution={solution} />
+        <GraphOverlay nodes={nodes} step={step} solution={solution} revealedLegs={revealedLegs} />
       </MapContainer>
       <BasemapToggle basemap={basemap} onBasemap={setBasemap} />
       <div className="legend-box">

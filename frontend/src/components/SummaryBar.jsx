@@ -1,4 +1,4 @@
-export default function SummaryBar({ solution, nodes, route }) {
+export default function SummaryBar({ solution, nodes, route, onReplay, replaying }) {
   const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
   return (
     <footer className="summary">
@@ -7,6 +7,9 @@ export default function SummaryBar({ solution, nodes, route }) {
         <span className="totals">
           <strong>{solution.totalMinutes} minutes</strong> · {solution.totalKm} km
         </span>
+        <button className="replay-btn" onClick={onReplay} disabled={replaying}>
+          ↻ Trace tour
+        </button>
       </div>
       <div className="summary-path">
         {solution.path.map((id, i) => (

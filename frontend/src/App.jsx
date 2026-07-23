@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import { fetchSolve } from "./api";
 import { initialPlayback, playbackReducer } from "./playback";
+import { initialSnake, snakeReducer, SNAKE_LEG_MS } from "./snake";
 import Controls from "./components/Controls";
 import GraphView from "./components/GraphView";
 import QueuePanel from "./components/QueuePanel";
@@ -11,6 +12,7 @@ export default function App() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [pb, dispatch] = useReducer(playbackReducer, initialPlayback);
+  const [snake, snakeDispatch] = useReducer(snakeReducer, initialSnake);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,6 +35,21 @@ export default function App() {
     return () => clearInterval(id);
   }, [pb.playing, pb.speed, data, total]);
 
+  const atEnd = !!data && pb.index === total - 1;
+  const totalLegs = data ? data.solution.legs.length : 0;
+
+  // Auto-play the snake trace the moment the search animation reaches its
+  // final step (and again whenever a freshly solved route lands here).
+  useEffect(() => {
+    if (atEnd) snakeDispatch({ type: "START" });
+  }, [atEnd, data]);
+
+  useEffect(() => {
+    if (!snake.playing) return;
+    const id = setInterval(() => snakeDispatch({ type: "TICK", total: totalLegs }), SNAKE_LEG_MS);
+    return () => clearInterval(id);
+  }, [snake.playing, totalLegs]);
+
   if (error) {
     return (
       <div className="notice error">
@@ -45,7 +62,6 @@ export default function App() {
   if (!data) return <div className="notice">Running UCS on the Python backend…</div>;
 
   const step = data.steps[pb.index];
-  const atEnd = pb.index === total - 1;
 
   return (
     <div className="app">
@@ -57,10 +73,23 @@ export default function App() {
         <Controls route={route} onRoute={setRoute} pb={pb} dispatch={dispatch} total={total} />
       </header>
       <main className="content">
-        <GraphView nodes={data.nodes} step={step} solution={atEnd ? data.solution : null} />
+        <GraphView
+          nodes={data.nodes}
+          step={step}
+          solution={atEnd ? data.solution : null}
+          revealedLegs={snake.revealed}
+        />
         <QueuePanel step={step} index={pb.index} total={total} />
       </main>
-      {atEnd && <SummaryBar solution={data.solution} nodes={data.nodes} route={route} />}
+      {atEnd && (
+        <SummaryBar
+          solution={data.solution}
+          nodes={data.nodes}
+          route={route}
+          onReplay={() => snakeDispatch({ type: "START" })}
+          replaying={snake.playing}
+        />
+      )}
     </div>
   );
 }
