@@ -2,7 +2,7 @@
 // once UCS finishes, legs of the winning path draw in one at a time instead
 // of appearing all at once. Mirrors playback.js's shape/conventions.
 
-export const SNAKE_LEG_MS = 1200; // fixed pace per leg, independent of leg minutes
+export const SNAKE_LEG_MS = 3600; // fixed pace per leg, independent of leg minutes
 
 export const initialSnake = { revealed: 0, playing: false };
 
